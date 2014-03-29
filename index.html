@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="slot_select.js"></script>
+<link rel="stylesheet" type="text/css" href="slot_select.css"/>
+
+</head>
+
+<body>
+<script>
+
+function abc() {
+    var res = get_selected_slot();
+    var s ="";
+    for (i in res) {
+       s+= i + ":" + res[i] + "\r\n"; 
+    }
+    alert(s);
+}
+
+$(document).ready(function() {
+        $("#but_add_row").click(function () {
+            var txt = $("#txt").val();
+            slot_select_add_row(txt);
+            });    
+    });
+</script>
+<div id="id_slot" ></div>
+<script>
+        setup_slot_table(['mon', 'tue','wed', 'thu', 'fri', 'sat','sun'],['1','2','3','4','5','6'], false);
+</script>
+<input type="button" id="abc" value="Show selected" onClick="abc();"/>
+<input type="button" id="abcd" value="Clear selected" onClick="slot_select_clear();"/>
+<input type="button" id="abcde" value="Select all" onClick="slot_select_select_all();"/>
+<br />
+<input type="text" id="txt" size="10"/><input type="button" id="but_add_row" value="Add row"/>
+</body>
+</html>
