@@ -37,8 +37,8 @@ $(document).ready(function() {
                 mat[rows[i]][slots[j]]=Math.floor(Math.random()*10)%2;
             }
         }
-        //setup_slot_table(rows, slots, { "display_slot_name": false, "display_slot_header": true});
-        restore_slot_table(mat, {"display_slot_name":false, "display_slot_header":true});
+        setup_slot_table(rows, slots, { "display_slot_name": false, "display_slot_header": true});
+        //restore_slot_table(mat, {"display_slot_name":false, "display_slot_header":true});
 </script>
 <input type="button" id="abc" value="Show selected" onClick="abc();"/>
 <input type="button" id="abcd" value="Clear selected" onClick="slot_select_clear();"/>

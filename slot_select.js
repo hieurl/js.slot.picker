@@ -2,41 +2,16 @@ var select_slot_drag=false;
 var slot_html = "";
 
 
-function setup_slot_table(row_list, slots, opt) {
-    var display_slot_name=opt["display_slot_name"];
-    var display_slot_header=opt["display_slot_header"];
-    var html ="<table id='select_table'>";
-
-    //setup slot header
-    if (display_slot_header == true) {
-        html +="<tr class='c_slot_header'><td></td>";
-        
-        for(j in slots) {
-            html += "<td class='c_slot_header_item'>"+slots[j]+"</td>";
+function setup_slot_table(rows, slots, opt) {
+    var mat={};
+    for (i=0;i<rows.length;i++) {
+        mat[rows[i]]=[];
+        for(j=0;j<slots.length;j++) {
+            mat[rows[i]][slots[j]]=1; /* default: all selected */
         }
-        html +="</tr>";
     }
 
-    //rows
-    for (j=0;j<slots.length;j++) {
-        slot_html += "<td class='c_item' id='"+slots[j]+"'"+">"
-            +"<div class='c_slot_item c_slot_selected'>";
-        if (display_slot_name==true) {
-            slot_html += slots[j];
-        } else {
-            slot_html += "---";
-        }
-        slot_html += "</div>"+
-            "</td>";
-    }
-
-    //rows for each channel
-    for (i=0;i<row_list.length;i++) {
-        html += "<tr class='c_channel_name_"+row_list[i]+"'><td class='c_channel_name_item'>"+row_list[i]+"</td>"+slot_html+"</tr>";
-    }
-    html +="</table>";
-
-    $("#id_slot").html(html);
+    restore_slot_table(mat, opt);
 }
 
 function restore_slot_table(slot_matrix, opt) {
@@ -122,6 +97,94 @@ function get_selected_slot(){
 
     return res;
 }
+
+/* return mon:1,2,3~tue:1,2,4... */
+function get_selected_slot_as_text() {
+    var res = get_selected_slot();
+    var s ="";
+    for (i in res) {
+       s+= i + ":" + res[i] + "~"; 
+    }
+    return s;
+}
+
+/* selected: mon:1,2,3~tue:2,3,1 */
+function slot_select_text_to_matrix(rows, cols, selected) {
+    if (rows == null) {
+        rows=['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    }
+
+    if (cols == null) {
+        cols=['1','2','3','4','5','6','7','8','9','10', '11', '12', '13', '14','15','16','17','18','19','20','21','22','23','24'];
+    }
+    var day=selected.split("~");
+  
+    var mat={};
+    for (i=0;i<rows.length;i++) {
+      mat[rows[i]]=[];
+      for(j=0;j<cols.length;j++) {
+        mat[rows[i]][cols[j]]=0;
+      }
+    }
+
+    //day
+    var index="";
+    for (i=0;i<day.length;i++) {
+      //slot
+      if (day[i] == "") { continue; }
+
+      index=day[i].split(":")[0]
+      var ds=day[i].split(":")[1]
+
+      if (ds == "") { continue; }
+      ds = ds.split(",");
+      
+      for (j=0;j<ds.length;j++) {
+        if (ds[j]==""){ continue; }
+        mat[index][ds[j]]=1;
+      }
+    }
+    return mat;
+}
+
+/* return mon:1,2,3~tue:1,2,4... */
+function slot_select_matrix_to_text(mat) {
+    var s="";
+    for (row in mat) {
+        s+=row+":";
+        for (col in mat[row]) {
+            if (mat[row][col] == 1) {
+                s+=col+",";
+            } else if (mat[row][col] == -1) {
+                s+="-"+col+",";
+            }
+        }
+        s+="~";
+    }
+
+    return s;
+}
+
+/* 0: no change, 1: newly selected, -1: deselected */
+function slot_select_get_matrix_diff(rows, cols, old_mat, new_mat) {
+    if (rows == null) {
+        rows=['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    }
+
+    if (cols == null) {
+        cols=['1','2','3','4','5','6','7','8','9','10', '11', '12', '13', '14','15','16','17','18','19','20','21','22','23','24'];
+    }
+
+    var diff_mat={};
+    for (i=0;i<rows.length;i++) {
+        diff_mat[rows[i]]=[];
+        for(j=0;j<cols.length;j++) {
+            diff_mat[rows[i]][cols[j]] = new_mat[rows[i]][cols[j]] - old_mat[rows[i]][cols[j]];
+        }
+    }
+    return diff_mat;
+}
+
 
 function slot_select_clear() {
     $(".c_slot_item").removeClass("c_slot_selected");
