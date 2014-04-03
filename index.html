@@ -11,39 +11,62 @@
 <script>
 
 function abc() {
-    var res = get_selected_slot();
-    var s ="";
-    for (i in res) {
-       s+= i + ":" + res[i] + "\r\n"; 
-    }
-    alert(s);
+    var res = get_selected_slot_as_text("id_slot");
+    var s ="Selected slots returned as text: <br/>" 
+        + "<span style='color: red;'>"
+        + res 
+        + "</span>";
+    $("#id_slot_string").html(s);
 }
 
 $(document).ready(function() {
         $("#but_add_row").click(function () {
             var txt = $("#txt").val();
-            slot_select_add_row(txt);
+            slot_select_add_row("id_slot", txt);
             });    
     });
 </script>
-<div id="id_slot" ></div>
+<div class="c_select_slot_container">
+    <label for="id_slot">A fully selected table</label>
+    <div id="id_slot" style="text-align: center;margin:auto;width:465px;" ></div>
+    <div id="id_slot_string" ></div>
+    <input type="button" id="abc" value="Show selected" onClick="abc();"/>
+    <input type="button" id="abcd" value="Clear" onClick="slot_select_clear('id_slot');"/>
+    <input type="button" id="abcde" value="Select all" onClick="slot_select_select_all('id_slot');"/>
+    <input type="button" id="abcdef" value="Inverse" onClick="slot_select_inverse('id_slot');"/>
+    <br />
+    <input type="text" id="txt" size="10"/><input type="button" id="but_add_row" value="Add row"/>
+</div>
+<p></p>
+<div class="c_select_slot_container">
+    <label for="id_slot2">A randomly generated table</label>
+    <div id="id_slot2" style="text-align: center;margin:auto;width:465px;"></div>
+    <input type="button" id="ab" value="New random" onClick="random_table();"/>
+    <p>
+    luongtronghieu@gmail.com<br/>
+    <a href="http://lthieu.wordpress.com" target="_blank">lthieu.wordpress.com</a>
+    </p>
+</div>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
 <script>
-        var rows=['mon', 'tue','wed', 'thu', 'fri', 'sat','sun'];
-        var slots=['a','b','c','d','e','f'];
-        var mat={};
-        for (i=0;i<rows.length;i++) {
-            mat[rows[i]]=[];
-            for(j=0;j<slots.length;j++) {
-                mat[rows[i]][slots[j]]=Math.floor(Math.random()*10)%2;
-            }
+var rows=['mon', 'tue','wed', 'thu', 'fri', 'sat','sun'];
+var slots=['a','b','c','d','e','f'];
+function random_table() {
+    var mat={};
+    for (i=0;i<rows.length;i++) {
+        mat[rows[i]]=[];
+        for(j=0;j<slots.length;j++) {
+            mat[rows[i]][slots[j]]=Math.floor(Math.random()*10)%2;
         }
-        setup_slot_table(rows, slots, { "display_slot_name": false, "display_slot_header": true});
-        //restore_slot_table(mat, {"display_slot_name":false, "display_slot_header":true});
+    }
+    restore_slot_table("id_slot2", mat, {"display_slot_name":false, "display_slot_header":true});
+}
+    setup_slot_table("id_slot",rows, slots, { "display_slot_name": false, "display_slot_header": true});
+    random_table();
 </script>
-<input type="button" id="abc" value="Show selected" onClick="abc();"/>
-<input type="button" id="abcd" value="Clear selected" onClick="slot_select_clear();"/>
-<input type="button" id="abcde" value="Select all" onClick="slot_select_select_all();"/>
-<br />
-<input type="text" id="txt" size="10"/><input type="button" id="but_add_row" value="Add row"/>
 </body>
 </html>

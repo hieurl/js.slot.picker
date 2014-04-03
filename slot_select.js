@@ -1,8 +1,11 @@
 var select_slot_drag=false;
 var slot_html = "";
+var div_ids=[];
+var display_slot_name;
+var display_slot_header;
 
 
-function setup_slot_table(rows, slots, opt) {
+function setup_slot_table(div_id, rows, slots, opt) {
     var mat={};
     for (i=0;i<rows.length;i++) {
         mat[rows[i]]=[];
@@ -11,18 +14,22 @@ function setup_slot_table(rows, slots, opt) {
         }
     }
 
-    restore_slot_table(mat, opt);
+    restore_slot_table(div_id, mat, opt);
 }
 
-function restore_slot_table(slot_matrix, opt) {
-    console.log(slot_matrix);
-    var display_slot_name=opt["display_slot_name"];
-    var display_slot_header=opt["display_slot_header"];
-    var html ="<table id='select_table'>";
+function restore_slot_table(div_id, slot_matrix, opt) {
+    //console.log(slot_matrix);
+    div_ids.push(div_id);
+
+    //check options
+    if (typeof opt=='undefined') opt=[];
+    display_slot_name=opt["display_slot_name"]?typeof opt["display_slot_name"] != 'undefined':false;
+    display_slot_header=opt["display_slot_header"]?typeof opt["display_slot_header"] != 'undefined':true;
+
+    var html ="<table id='"+div_id+"_select_table'>";
 
     //display header
     if (display_slot_header == true) {
-        console.log("going in");
         html +="<tr class='c_slot_header'><td></td>";
         
         var k;
@@ -75,12 +82,12 @@ function restore_slot_table(slot_matrix, opt) {
     }
     html += "</table>";
 
-    $("#id_slot").html(html);
+    $("div[id="+div_id+"]").html(html);
 }
 
-function get_selected_slot(){
+function get_selected_slot(div_id){
     res = {};
-    $(".c_slot_selected").each(function () {
+    $("div[id="+div_id+"]").find(".c_slot_selected").each(function () {
         s_id=$(this).parent().attr('id');
         pa = $( this ).parent().parent();        
         
@@ -99,8 +106,8 @@ function get_selected_slot(){
 }
 
 /* return mon:1,2,3~tue:1,2,4... */
-function get_selected_slot_as_text() {
-    var res = get_selected_slot();
+function get_selected_slot_as_text(div_id) {
+    var res = get_selected_slot(div_id);
     var s ="";
     for (i in res) {
        s+= i + ":" + res[i] + "~"; 
@@ -186,15 +193,21 @@ function slot_select_get_matrix_diff(rows, cols, old_mat, new_mat) {
 }
 
 
-function slot_select_clear() {
-    $(".c_slot_item").removeClass("c_slot_selected");
+function slot_select_clear(div_id) {
+    $("div[id="+div_id+"]").find(".c_slot_item").removeClass("c_slot_selected");
 }
-function slot_select_select_all () {
-    $(".c_slot_item").addClass("c_slot_selected");
+
+function slot_select_select_all(div_id) {
+    $("div[id="+div_id+"]").find(".c_slot_item").addClass("c_slot_selected");
 }
-function slot_select_add_row(row_name) {
+
+function slot_select_inverse(div_id) {
+    $("div[id="+div_id+"]").find(".c_slot_item").toggleClass("c_slot_selected");
+}
+
+function slot_select_add_row(div_id,row_name) {
     $h = "<tr class='c_channel_name_"+row_name+"'><td class='c_channel_name'>"+row_name+"</td>"+slot_html+"</tr>";
-    $("#select_table").append($h);
+    $("table[id="+div_id+"_select_table]").append($h);
 }
 
 $(document).ready(function() {
