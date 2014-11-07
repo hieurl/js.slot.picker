@@ -1,5 +1,5 @@
 var select_slot_drag=false;
-var slot_html = "";
+var slot_html = [];
 var div_ids=[];
 var display_slot_name;
 var display_slot_header;
@@ -27,6 +27,7 @@ function restore_slot_table(div_id, slot_matrix, opt) {
     display_slot_header=opt["display_slot_header"]?typeof opt["display_slot_header"] != 'undefined':true;
 
     var html ="<table id='"+div_id+"_select_table'>";
+    slot_html[div_id]="";
 
     //display header
     if (display_slot_header == true) {
@@ -42,14 +43,14 @@ function restore_slot_table(div_id, slot_matrix, opt) {
             html += "<td class='c_slot_header_item'>"+j+"</td>";
     
             //create a "clean" slot rows for appending method
-            slot_html += "<td class='c_item' id='"+j+"'"+">"
+            slot_html[div_id] += "<td class='c_item' id='"+j+"'"+">"
                 +"<div class='c_slot_item c_slot_selected'>";
             if (display_slot_name==true) {
-                slot_html += j;
+                slot_html[div_id] += j;
             } else {
-                slot_html += "---";
+                slot_html[div_id] += "---";
             }
-            slot_html += "</div>"+
+            slot_html[div_id] += "</div>"+
                 "</td>";
         }
         html +="</tr>";
@@ -206,8 +207,9 @@ function slot_select_inverse(div_id) {
 }
 
 function slot_select_add_row(div_id,row_name) {
-    $h = "<tr class='c_channel_name_"+row_name+"'><td class='c_channel_name'>"+row_name+"</td>"+slot_html+"</tr>";
-    $("table[id="+div_id+"_select_table]").append($h);
+    console.log(slot_html[div_id]);
+    var h = "<tr class='c_channel_name_"+row_name+"'><td class='c_channel_name'>"+row_name+"</td>"+slot_html[div_id]+"</tr>";
+    $("table[id="+div_id+"_select_table]").append(h);
 }
 
 $(document).ready(function() {
