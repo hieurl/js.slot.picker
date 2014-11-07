@@ -1,5 +1,5 @@
 var select_slot_drag=false;
-var slot_html = [];
+var slot_html = []; // store one row html for each slot_select. Used for add more row
 var div_ids=[];
 var display_slot_name;
 var display_slot_header;

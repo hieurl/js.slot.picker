@@ -53,18 +53,20 @@ $(document).ready(function() {
 <p></p>
 <p></p>
 <script>
-var rows=['mon', 'tue','wed', 'thu', 'fri', 'sat','sun'];
-var slots=['a','b','c','d','e','f'];
-function random_table() {
-    var mat={};
-    for (i=0;i<rows.length;i++) {
-        mat[rows[i]]=[];
-        for(j=0;j<slots.length;j++) {
-            mat[rows[i]][slots[j]]=Math.floor(Math.random()*10)%2;
+    var rows=['mon', 'tue','wed', 'thu', 'fri', 'sat','sun'];
+    var slots=['a','b','c','d','e','f'];
+
+    function random_table() {
+        var mat={};
+        for (i=0;i<rows.length;i++) {
+            mat[rows[i]]=[];
+            for(j=0;j<slots.length;j++) {
+                mat[rows[i]][slots[j]]=Math.floor(Math.random()*10)%2;
+            }
         }
+        restore_slot_table("id_slot2", mat, {"display_slot_name":false, "display_slot_header":true});
     }
-    restore_slot_table("id_slot2", mat, {"display_slot_name":false, "display_slot_header":true});
-}
+
     setup_slot_table("id_slot",rows, slots, { "display_slot_name": false, "display_slot_header": true});
     random_table();
 </script>
